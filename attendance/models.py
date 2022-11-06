@@ -10,7 +10,7 @@ class Attendance(models.Model):
   time_in = models.DateTimeField(auto_now_add=True)
 
   class Meta:
-    ordering = ['full_name']
+    ordering = ['id']
 
   def __str__(self):
         return self.full_name

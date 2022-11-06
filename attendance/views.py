@@ -5,13 +5,18 @@ from .models import Attendance
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
-
+from django.db.models import Q
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 # Create your views here.
+
 class AttendanceList(generics.GenericAPIView):
   """
   List of all attendance
   """
   serializer_class=AttendanceListSerializer
+  pagination_class=PageNumberPagination
   def get_queryset(self):
     return Attendance.objects.all()
 
@@ -21,7 +26,7 @@ class AttendanceList(generics.GenericAPIView):
     if query==None:
       query=""
       # http://127.0.0.1:8000/attendance-list?query=jj@gmail.com
-    attendance=Attendance.objects.filter(email__icontains=query) 
+    attendance=Attendance.objects.filter(Q(full_name__icontains=query) | Q(email__icontains=query)) 
     serializer=AttendanceListSerializer(attendance,many=True)
     return Response(serializer.data)
 
@@ -37,28 +42,31 @@ class AttendanceDetail(generics.GenericAPIView):
   """
   Retrieve, update or delete someone's attendance details
   """
+  permission_classes = [IsAuthenticated]
+
   serializer_class=AttendanceListSerializer
-  def get_object(self, full_name):
+  def get_object(self, pk):
     try:
-      return Attendance.objects.get(full_name=full_name)
+      return Attendance.objects.get(pk=pk)
     except Attendance.DoesNotExist:
       raise Http404
 
-  def get(self,request,full_name,format=None):
-    attendance=self.get_object(full_name)
+  def get(self,request,pk,format=None):
+    # attendance=self.get_object(full_name)
+    attendance=Attendance.objects.get(pk=pk)
     serializer=AttendanceListSerializer(attendance)
     return Response(serializer.data)
 
-  def put(self,request,full_name,format=None):
-    attendance=self.get_object(full_name)
+  def put(self,request,pk,format=None):
+    attendance=self.get_object(pk)
     serializer=AttendanceListSerializer(attendance,data=request.data)
     if serializer.is_valid():
       serializer.save()
       return Response(serializer.data)
     return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST) 
 
-  def delete(self,request,full_name,format=None):
-    attendance=self.get_object(full_name)
+  def delete(self,request,pk,format=None):
+    attendance=self.get_object(pk)
     attendance.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
