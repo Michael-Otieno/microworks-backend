@@ -1,0 +1,1 @@
+web: gunicorn kot_microworks.wsgi
