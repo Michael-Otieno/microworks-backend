@@ -9,14 +9,16 @@ from django.db.models import Q
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
+from attendance.pagination import CustomPageNumberPagination
 # Create your views here.
 
 class AttendanceList(generics.GenericAPIView):
   """
   List of all attendance
   """
+  pagination_class=CustomPageNumberPagination
   serializer_class=AttendanceListSerializer
-  pagination_class=PageNumberPagination
+  pagination_class.page_size=1
   def get_queryset(self):
     return Attendance.objects.all()
 
