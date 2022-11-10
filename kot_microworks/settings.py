@@ -31,6 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = config('SECRET_KEY')
+# SECRET_KEY = os.environ[‘secret_key’]
 
 DEBUG=config('DEBUG', cast=bool)
 
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     
     'attendance',
     'rest_framework',
+    "corsheaders",
 ]
 
 REST_FRAMEWORK = {
@@ -69,6 +71,7 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -98,7 +101,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'kot_microworks.wsgi.application'
 
-
+CORS_ALLOWED_ORIGINS = ['microworks-backend-production.up.railway.app']
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASES = {
@@ -158,5 +161,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
