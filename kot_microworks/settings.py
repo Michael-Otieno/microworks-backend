@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'attendance',
     'rest_framework',
     "corsheaders",
+    'drf_yasg',
 ]
 
 REST_FRAMEWORK = {
