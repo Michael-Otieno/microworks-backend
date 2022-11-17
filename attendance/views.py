@@ -4,7 +4,7 @@ from rest_framework import generics
 from .models import Attendance
 from rest_framework.response import Response
 from rest_framework import status
-from django.http import Http404
+from django.http import Http404,JsonResponse
 from django.db.models import Q
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -12,6 +12,10 @@ from rest_framework.pagination import PageNumberPagination
 from attendance.pagination import CustomPageNumberPagination
 # Create your views here.
 
+
+def endpoints(request):
+  data = ['http://127.0.0.1:8000/attendance-list', 'http://127.0.0.1:8000/attendance-list/<int:pk>' ]
+  return JsonResponse(data, safe=False)
 class AttendanceList(generics.GenericAPIView):
   """
   List of all attendance
@@ -44,7 +48,7 @@ class AttendanceDetail(generics.GenericAPIView):
   """
   Retrieve, update or delete someone's attendance details
   """
-  permission_classes = [IsAuthenticated]
+  # permission_classes = [IsAuthenticated]
 
   serializer_class=AttendanceListSerializer
   def get_object(self, pk):
